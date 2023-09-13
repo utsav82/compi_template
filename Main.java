@@ -5,10 +5,9 @@ import java.io.*;
 import java.lang.*;
 import java.math.BigInteger;
 
-
 /* Name of the class has to be "Main" only if the class is public. */
 public class Main {
-    static long mod = 1000000007;
+    static long mod = 998244353;
     static final Random random = new Random();
 
     static long[] factorials;
@@ -39,17 +38,20 @@ public class Main {
 
     static class Question {
 
-        long dp[][];
+        int dp[];
 
         public void solve(int testNumber, InputReader sc, OutputWriter out) {
+
             int n = sc.nextInt();
-            int m = sc.nextInt();
-            int arr[] = sc.nextIntArray(n);
-            
-            
 
         }
 
+    }
+
+    public static void swap(int[] a, int i, int j) {
+        int temp = a[i];
+        a[i] = a[j];
+        a[j] = temp;
     }
 
     public static class Multiset<T> {
@@ -153,17 +155,17 @@ public class Main {
 
     static class Pair implements Comparable<Pair> {
         long i;
-        int j;
+        long j;
         long cost;
 
-        public Pair(long i, int j, long cost) {
+        public Pair(long i, long j, long cost) {
             this.i = i;
             this.j = j;
             this.cost = cost;
 
         }
 
-        public Pair(long x, int y) {
+        public Pair(long x, long y) {
             this.i = x;
             this.j = y;
         }
@@ -291,7 +293,7 @@ public class Main {
         return gcd(b, a % b);
     }
 
-    public long lcm(long a, long b) {
+    public static long lcm(long a, long b) {
         return (a * b) / gcd(a, b);
     }
 
@@ -305,6 +307,13 @@ public class Main {
                 return false;
 
         return true;
+    }
+
+    static boolean isPrime(int n) {
+        for (int i = 2; i <= Math.sqrt(n); i++)
+            if (n % i == 0)
+                return false;
+        return n > 1;
     }
 
     static class SegmentTree {
@@ -386,6 +395,20 @@ public class Main {
         }
     }
 
+    public static int countSetBits(long number) {
+        int count = 0;
+        while (number > 0) {
+            ++count;
+            number &= number - 1;
+        }
+        return count;
+    }
+
+    static boolean isPowerOfTwo(long x) {
+
+        return x != 0 && ((x & (x - 1)) == 0);
+    }
+
     static public ArrayList<Long> primeFactors(long n) {
         ArrayList<Long> factorials = new ArrayList<>();
         long limit = (long) Math.sqrt(n);
@@ -404,7 +427,7 @@ public class Main {
         return factorials;
     }
 
-    public int max(int[] elementData) {
+    public static int max(int[] elementData) {
 
         int max = elementData[0];
         for (int i = 1; i < elementData.length; i++) {
@@ -444,6 +467,39 @@ public class Main {
             }
         }
         return min;
+    }
+
+    public static long max(int i, long l) {
+        return Math.max(i, l);
+
+    }
+
+    public static void reverse(int[] array) {
+
+        int n = array.length;
+
+        for (int i = 0; i < n / 2; i++) {
+
+            int temp = array[i];
+
+            array[i] = array[n - i - 1];
+
+            array[n - i - 1] = temp;
+        }
+    }
+
+    public static void reverse(long[] array) {
+
+        int n = array.length;
+
+        for (int i = 0; i < n / 2; i++) {
+
+            long temp = array[i];
+
+            array[i] = array[n - i - 1];
+
+            array[n - i - 1] = temp;
+        }
     }
 
     static void precompFacts() {
@@ -487,27 +543,27 @@ public class Main {
         Arrays.sort(a);
     }
 
-    public int modularAddition(int a, int b, int MOD) {
+    static public int modularAddition(int a, int b, int MOD) {
         return (a % MOD + b % MOD) % MOD;
     }
 
-    public long modularAddition(long a, long b, long MOD) {
+    static public long modularAddition(long a, long b, long MOD) {
         return (a % MOD + b % MOD) % MOD;
     }
 
-    public int modularMultiplication(int a, int b, int MOD) {
+    static public int modularMultiplication(int a, int b, int MOD) {
         return ((a % MOD) * (b % MOD)) % MOD;
     }
 
-    public static long modularMultiplication(long a, long b, long MOD) {
+    static public long modularMultiplication(long a, long b, long MOD) {
         return ((a % MOD) * (b % MOD)) % MOD;
     }
 
-    public int modularSubtraction(int a, int b, int MOD) {
+    static public int modularSubtraction(int a, int b, int MOD) {
         return (a % MOD - b % MOD + MOD) % MOD;
     }
 
-    public long modularSubtraction(long a, long b, long MOD) {
+    static public long modularSubtraction(long a, long b, long MOD) {
         return (a % MOD - b % MOD + MOD) % MOD;
     }
 
@@ -531,7 +587,7 @@ public class Main {
         return result;
     }
 
-    public int modularExponentiation(int x, int n, int MOD) {
+    public static int modularExponentiation(int x, int n, int MOD) {
         if (n == 0)
             return 1 % MOD;
         else if (n % 2 == 0)

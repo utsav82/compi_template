@@ -3,37 +3,17 @@ using namespace std;
 
 int main()
 {
-	int t;
-	cin >> t;
-	while (t--)
-	{
-		int n;
-		int m;
-		cin >> n >> m;
-		int a[n];
-		for (int i = 0; i < n; i++)
-		{
-			cin >> a[i];
-		}
-		multiset<int> ele,diff;
-		ele.insert(0);
-		ele.insert(m);
-		diff.insert(m);
-		for(int i=0;i<n;i++){
-			ele.insert(a[i]);
-			auto it = ele.find(a[i]);
-			auto next = it;
-			auto prev = it;
-			next++;
-			prev--;
-			if(it!=ele.end() && it!=ele.begin()){
-				diff.erase(diff.find(*next-*prev));
-				diff.insert(*next-*it);
-				diff.insert(*it-*prev);
-			}
-			cout<<*diff.rbegin()<<" ";
-		}
-		cout<<endl;
-
+	
+ string str = "tourist 3858 ksun48 3679 Benq 3658 Um_nik 3648 apiad 3638 Stonefeang 3630 ecnerwala 3613 mnbvmar 3555 newbiedmy 3516 semiexp 3481";
+ string s;cin>>s;
+ for(int i=0;i<str.size()-4;i++){
+	if(s[0]==str[i] && s==str.substr(i,s.size())){
+		cout<<str.substr(i+s.size()+1,4)<<endl;
+		break;
 	}
+ }
+        
+        
+        
+	
 }

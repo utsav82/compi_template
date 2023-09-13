@@ -14,7 +14,7 @@ class NumberTheory {
      * 1. (a+b)%c=(a%c+b%c)%c
      * 2. (a*b)%c=(a%c*b%c)%c
      * 3. (a-b)%c=(a%c-b%c+c)%c
-     * 4. (a/b)%c=(a%c*(b^-1)%c)%c -- (b^-1 is multiplicative modulo inverse)
+     * 4. (a/b)%c=(a%c*(b^-1)%c)%c --   (b^-1 is multiplicative modulo inverse)
      */
     // Modular Addition
     public int modularAddition(int a, int b, int MOD) {
