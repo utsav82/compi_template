@@ -1,157 +1,55 @@
 // don't place package name! */
 
 import java.util.*;
+import java.util.Map.Entry;
 import java.io.*;
 import java.lang.*;
-import java.math.BigInteger;
+import java.math.*;
+import java.text.DecimalFormat;
 
 /* Name of the class has to be "Main" only if the class is public. */
 public class Main {
-    static long mod = 998244353;
+    static long mod = 1000000007;
     static final Random random = new Random();
-
     static long[] factorials;
     static long[] invFactorials;
 
     /* Name of the class has to be "Main" only if the class is public. */
     public static void main(String[] args) throws IOException {
+
         // File in = new File("input.txt");
         // File output = new File("output.txt");
         // InputStream inputStream = new FileInputStream(in);
         // OutputStream outputStream = new FileOutputStream(output);
+
         InputStream inputStream = System.in;
         OutputStream outputStream = System.out;
         InputReader sc = new InputReader(inputStream);
         OutputWriter out = new OutputWriter(outputStream);
+
         Question solver = new Question();
 
         // precompFacts();
-
-        int testCount = Integer.parseInt(sc.next());
+        int testCount = sc.nextInt();
         for (int i = 1; i <= testCount; i++) {
-            // out.print("CASE #" + i + ": ");
+            // out.print("Case #" + i + ": ");
             solver.solve(i, sc, out);
         }
+
         // solver.solve(1, sc, out);
         out.close();
     }
 
     static class Question {
 
-        int dp[];
-
         public void solve(int testNumber, InputReader sc, OutputWriter out) {
-
             int n = sc.nextInt();
-
-        }
-
-    }
-
-    public static void swap(int[] a, int i, int j) {
-        int temp = a[i];
-        a[i] = a[j];
-        a[j] = temp;
-    }
-
-    public static class Multiset<T> {
-        public TreeMap<T, Integer> map;
-        public int size = 0;
-
-        public Multiset() {
-            map = new TreeMap<>();
-        }
-
-        public Multiset(T[] a) {
-            map = new TreeMap<>();
-            size = a.length;
-            for (int i = 0; i < a.length; i++) {
-                map.put(a[i], map.getOrDefault(a[i], 0) + 1);
-            }
-        }
-
-        void add(T a) {
-            size++;
-            map.put(a, map.getOrDefault(a, 0) + 1);
-        }
-
-        void remove(T a) {
-            size--;
-            int val = map.get(a);
-            map.put(a, val - 1);
-            if (val == 1)
-                map.remove(a);
-        }
-
-        void removeAll(int a) {
-            if (map.containsKey(a)) {
-                size -= map.get(a);
-                map.remove(a);
-            }
-        }
-
-        T ceiling(T a) {
-            return map.ceilingKey(a);
-        }
-
-        T floor(T a) {
-            return map.floorKey(a);
-        }
-
-        T lower(T a) {
-            return map.lowerKey(a);
-        }
-
-        T higher(T a) {
-            return map.higherKey(a);
-        }
-
-        T first() {
-            return map.firstKey();
-        }
-
-        T last() {
-            return map.lastKey();
-        }
-
-        boolean contains(T a) {
-            return map.containsKey(a);
-        }
-
-        int size() {
-            return size;
-        }
-
-        void clear() {
-            map.clear();
-        }
-
-        T poll() {
-            if (map.size() == 0) {
-                return null;
-            }
-            size--;
-            T first = map.firstKey();
-            if (map.get(first) == 1) {
-                map.pollFirstEntry();
-            } else
-                map.put(first, map.get(first) - 1);
-            return first;
-        }
-
-        T polllast() {
-            if (map.size() == 0) {
-                return null;
-            }
-            size--;
-            T last = map.lastKey();
-            if (map.get(last) == 1) {
-                map.pollLastEntry();
-            } else
-                map.put(last, map.get(last) - 1);
-            return last;
+            out.println(n);
+           
         }
     }
+
+   
 
     static class Pair implements Comparable<Pair> {
         long i;
@@ -174,35 +72,77 @@ public class Main {
 
             int x = Long.compare(i, o.i);
 
+            if (x == 0) {
+                x = Long.compare(j, o.j);
+            }
+
             return x;
 
         }
 
-        // @Override
-        // public boolean equals(Object obj) {
-        // if (this == obj)
-        // return true;
-        // if (obj == null)
-        // return false;
-        // if (getClass() != obj.getClass())
-        // return false;
-        // Pair other = (Pair) obj;
-        // if (i != other.i)
-        // return false;
-        // if (j != other.j)
-        // return false;
-        // return true;
-        // }
+        @Override
+        public boolean equals(Object obj) {
+            if (this == obj)
+                return true;
+            if (obj == null)
+                return false;
+            if (getClass() != obj.getClass())
+                return false;
+            Pair other = (Pair) obj;
+            if (i != other.i)
+                return false;
+            if (j != other.j)
+                return false;
+            return true;
+        }
 
-        // @Override
-        // public int hashCode() {
-        // final int prime = 31;
-        // int result = 1;
-        // result = prime * result + i;
-        // result = prime * result + j;
-        // return result;
-        // }
+        @Override
+        public int hashCode() {
+            final int prime = 31;
+            int result = 1;
+            result = prime * result + (int) i;
+            result = prime * result + (int) j;
+            return result;
+        }
 
+    }
+
+    static int lower_bound(long[] array, long key) {
+
+        int low = 0, high = array.length;
+        int mid;
+
+        while (low < high) {
+
+            mid = low + (high - low) / 2;
+
+            if (key <= array[mid]) {
+                high = mid;
+            }
+
+            else {
+
+                low = mid + 1;
+            }
+        }
+
+        if (low < array.length && array[low] < key) {
+            low++;
+        }
+
+        return low;
+    }
+
+    public static void swap(int[] a, int i, int j) {
+        int temp = a[i];
+        a[i] = a[j];
+        a[j] = temp;
+    }
+
+    public static void swap(char[] a, int i, int j) {
+        char temp = a[i];
+        a[i] = a[j];
+        a[j] = temp;
     }
 
     static long power(long x, long y, long p) {
@@ -230,17 +170,6 @@ public class Main {
 
     }
 
-    static int arraySortedOrNot(int arr[], int n) {
-
-        if (n == 1 || n == 0)
-            return 1;
-
-        if (arr[n - 1] >= arr[n - 2])
-            return 0;
-
-        return arraySortedOrNot(arr, n - 1);
-    }
-
     public static <T extends Comparable<T>> T max(T a, T b) {
         if (a.compareTo(b) >= 0) {
             return a;
@@ -257,30 +186,7 @@ public class Main {
         }
     }
 
-    static class DisjointSet {
-        int[] s;
-
-        public DisjointSet(int n) {
-            Arrays.fill(s = new int[n], -1);
-        }
-
-        public int find(int i) {
-            return s[i] < 0 ? i : (s[i] = find(s[i]));
-        }
-
-        public boolean union(int a, int b) {
-            if ((a = find(a)) == (b = find(b)))
-                return false;
-            if (s[a] == s[b])
-                s[a]--;
-            if (s[a] <= s[b])
-                s[b] = a;
-            else
-                s[a] = b;
-            return true;
-        }
-    }
-
+  
     public static long gcd(long a, long b) {
         if (b == 0)
             return a;
@@ -301,14 +207,6 @@ public class Main {
         return (a * b) / gcd(a, b);
     }
 
-    static boolean isPrime(long n) {
-        for (long i = 2; i <= n / 2; i++)
-            if (n % i == 0)
-                return false;
-
-        return true;
-    }
-
     static boolean isPrime(int n) {
         for (int i = 2; i <= Math.sqrt(n); i++)
             if (n % i == 0)
@@ -316,85 +214,7 @@ public class Main {
         return n > 1;
     }
 
-    static class SegmentTree {
-        long[] seg, lazy;
-
-        SegmentTree(int n) {
-            seg = new long[4 * n];
-            lazy = new long[4 * n];
-        }
-
-        void build(int low, int high, int ind, long[] arr) {
-            if (low == high) {
-                seg[ind] = arr[low];
-                return;
-            }
-
-            int mid = low + ((high - low) >> 1);
-
-            build(low, mid, 2 * ind + 1, arr);
-            build(mid + 1, high, 2 * ind + 2, arr);
-
-            seg[ind] = seg[2 * ind + 1] + seg[2 * ind + 2];
-        }
-
-        void rangeUpdate(int l, int r, int low, int high, int ind, long val) {
-            if (lazy[ind] != 0) {
-                seg[ind] += (high - low + 1) * lazy[ind];
-                if (low != high) {
-                    lazy[2 * ind + 1] += lazy[ind];
-                    lazy[2 * ind + 2] += lazy[ind];
-                }
-                lazy[ind] = 0;
-            }
-
-            if (l > high || r < low)
-                return;
-
-            if (l <= low && high <= r) {
-                seg[ind] += (long) (high - low + 1) * val;
-
-                if (low != high) {
-                    lazy[2 * ind + 1] += val;
-                    lazy[2 * ind + 2] += val;
-                }
-                return;
-            }
-
-            int mid = low + ((high - low) >> 1);
-
-            rangeUpdate(l, r, low, mid, 2 * ind + 1, val);
-            rangeUpdate(l, r, mid + 1, high, 2 * ind + 2, val);
-
-            seg[ind] = seg[2 * ind + 1] + seg[2 * ind + 2];
-        }
-
-        long query(int l, int r, int low, int high, int ind) {
-            if (lazy[ind] != 0) {
-                seg[ind] += (high - low + 1) * lazy[ind];
-
-                if (low != high) {
-                    lazy[2 * ind + 1] += lazy[ind];
-                    lazy[2 * ind + 2] += lazy[ind];
-                }
-                lazy[ind] = 0;
-            }
-
-            if (r < low || l > high)
-                return 0;
-
-            if (l <= low && high <= r) {
-                return seg[ind];
-            }
-
-            int mid = low + ((high - low) >> 1);
-            long left = query(l, r, low, mid, 2 * ind + 1);
-            long right = query(l, r, mid + 1, high, 2 * ind + 2);
-
-            return left + right;
-        }
-    }
-
+    
     public static int countSetBits(long number) {
         int count = 0;
         while (number > 0) {
@@ -409,24 +229,6 @@ public class Main {
         return x != 0 && ((x & (x - 1)) == 0);
     }
 
-    static public ArrayList<Long> primeFactors(long n) {
-        ArrayList<Long> factorials = new ArrayList<>();
-        long limit = (long) Math.sqrt(n);
-        while (n % 2 == 0) {
-            factorials.add((long) 2);
-            n /= 2;
-        }
-        for (long i = 3; i <= limit; i += 2) {
-            while (n % i == 0) {
-                factorials.add(i);
-                n /= i;
-            }
-        }
-        if (n > 2)
-            factorials.add(n);
-        return factorials;
-    }
-
     public static int max(int[] elementData) {
 
         int max = elementData[0];
@@ -436,6 +238,17 @@ public class Main {
             }
         }
         return max;
+    }
+
+    static long highestPowerof2(long n) {
+
+        n |= n >> 1;
+        n |= n >> 2;
+        n |= n >> 4;
+        n |= n >> 8;
+        n |= n >> 16;
+
+        return n ^ (n >> 1);
     }
 
     public static int min(int[] array) {
@@ -448,7 +261,7 @@ public class Main {
         return min;
     }
 
-    public long max(long[] elementData) {
+    public static long max(long[] elementData) {
 
         long max = elementData[0];
         for (int i = 1; i < elementData.length; i++) {
@@ -469,9 +282,12 @@ public class Main {
         return min;
     }
 
-    public static long max(int i, long l) {
+    public static int max(int i, int l) {
         return Math.max(i, l);
+    }
 
+    public static long max(long i, long l) {
+        return Math.max(i, l);
     }
 
     public static void reverse(int[] array) {
@@ -530,17 +346,6 @@ public class Main {
         Collections.sort(l);
         for (int i = 0; i < a.length; i++)
             a[i] = l.get(i);
-    }
-
-    static void ruffleSort(long[] a) {
-        int n = a.length;
-        for (int i = 0; i < n; i++) {
-            int oi = random.nextInt(n);
-            long temp = a[oi];
-            a[oi] = a[i];
-            a[i] = temp;
-        }
-        Arrays.sort(a);
     }
 
     static public int modularAddition(int a, int b, int MOD) {

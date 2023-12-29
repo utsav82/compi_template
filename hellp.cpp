@@ -1,19 +1,59 @@
-#include <bits/stdc++.h>
+#include <iostream>
+#include <vector>
+#include <algorithm>
+#include <set>
+
 using namespace std;
+
+struct Pair
+{
+    long long i, j;
+
+    Pair(long long x, long long y) : i(x), j(y) {}
+
+    bool operator<(const Pair &other) const
+    {
+        return i < other.i || (i == other.i && j < other.j);
+    }
+};
 
 int main()
 {
-	
- string str = "tourist 3858 ksun48 3679 Benq 3658 Um_nik 3648 apiad 3638 Stonefeang 3630 ecnerwala 3613 mnbvmar 3555 newbiedmy 3516 semiexp 3481";
- string s;cin>>s;
- for(int i=0;i<str.size()-4;i++){
-	if(s[0]==str[i] && s==str.substr(i,s.size())){
-		cout<<str.substr(i+s.size()+1,4)<<endl;
-		break;
-	}
- }
-        
-        
-        
-	
+    int t;
+    cin >> t;
+    while (t--)
+    {
+
+        int n;
+        cin >> n;
+
+        vector<Pair> arr;
+        for (int i = 0; i < n; i++)
+        {
+            long long x, y;
+            cin >> x >> y;
+            arr.push_back(Pair(x, 1e10));
+            arr.push_back(Pair(y, x));
+        }
+
+        sort(arr.begin(), arr.end());
+
+        set<long long> s;
+        long long count = 0;
+        for (const Pair &p : arr)
+        {
+            if (p.j == 1e10)
+            {
+                s.insert(p.i);
+            }
+            else
+            {
+                count += distance(s.begin(), s.lower_bound(p.j));
+                s.erase(p.j);
+            }
+        }
+
+        cout << count << endl;
+    }
+    return 0;
 }
