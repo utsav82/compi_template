@@ -1,28 +1,37 @@
 package helper;
 
-import java.util.Arrays;
-
 class DisjointSet {
-        int[] s;
 
-        public DisjointSet(int n) {
-            Arrays.fill(s = new int[n], -1);
-        }
+    int parent[];
+    int size[];
 
-        public int find(int i) {
-            return s[i] < 0 ? i : (s[i] = find(s[i]));
-        }
-
-        public boolean union(int a, int b) {
-            if ((a = find(a)) == (b = find(b)))
-                return false;
-            if (s[a] == s[b])
-                s[a]--;
-            if (s[a] <= s[b])
-                s[b] = a;
-            else
-                s[a] = b;
-            return true;
-        }
+    public DisjointSet(int n) {
+        parent = new int[n];
+        size = new int[n];
     }
 
+    int find_set(int v) {
+        if (v == parent[v])
+            return v;
+        return parent[v] = find_set(parent[v]);
+    }
+
+    void make_set(int v) {
+        parent[v] = v;
+        size[v] = 1;
+    }
+
+    void union_sets(int a, int b) {
+        a = find_set(a);
+        b = find_set(b);
+        if (a != b) {
+            if (size[a] < size[b]) {
+                int temp = a;
+                a = b;
+                b = temp;
+            }
+            parent[b] = a;
+            size[a] += size[b];
+        }
+    }
+}

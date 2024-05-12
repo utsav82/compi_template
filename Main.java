@@ -4,12 +4,13 @@ import java.util.*;
 import java.util.Map.Entry;
 import java.io.*;
 import java.lang.*;
+import java.lang.reflect.Array;
 import java.math.*;
 import java.text.DecimalFormat;
 
 /* Name of the class has to be "Main" only if the class is public. */
 public class Main {
-    static long mod = 1000000007;
+    static long mod = (long) (1e9 + 7);
     static final Random random = new Random();
     static long[] factorials;
     static long[] invFactorials;
@@ -30,119 +31,60 @@ public class Main {
         Question solver = new Question();
 
         // precompFacts();
-        int testCount = sc.nextInt();
-        for (int i = 1; i <= testCount; i++) {
-            // out.print("Case #" + i + ": ");
-            solver.solve(i, sc, out);
+
+        boolean multiple = true;
+        if (multiple) {
+            int testCount = sc.nextInt();
+            for (int i = 1; i <= testCount; i++) {
+                // out.print("Case #" + i + ": ");
+                solver.solve(i, sc, out);
+            }
+        } else {
+            solver.solve(1, sc, out);
         }
 
-        // solver.solve(1, sc, out);
         out.close();
     }
 
     static class Question {
 
         public void solve(int testNumber, InputReader sc, OutputWriter out) {
-            int n = sc.nextInt();
-            out.println(n);
-           
+
         }
+
     }
 
-   
-
-    static class Pair implements Comparable<Pair> {
-        long i;
-        long j;
+    static class Pair<I extends Comparable<I>, J extends Comparable<J>> implements Comparable<Pair<I, J>> {
+        I i;
+        J j;
         long cost;
 
-        public Pair(long i, long j, long cost) {
+        public Pair(I i, J j) {
             this.i = i;
             this.j = j;
-            this.cost = cost;
-
         }
 
-        public Pair(long x, long y) {
-            this.i = x;
-            this.j = y;
-        }
-
-        public int compareTo(Pair o) {
-
-            int x = Long.compare(i, o.i);
-
-            if (x == 0) {
-                x = Long.compare(j, o.j);
-            }
-
-            return x;
-
+        @Override
+        public int compareTo(Pair<I, J> o) {
+            int cmp = i.compareTo(o.i);
+            return cmp != 0 ? cmp : j.compareTo(o.j);
         }
 
         @Override
         public boolean equals(Object obj) {
             if (this == obj)
                 return true;
-            if (obj == null)
+            if (obj == null || getClass() != obj.getClass())
                 return false;
-            if (getClass() != obj.getClass())
-                return false;
-            Pair other = (Pair) obj;
-            if (i != other.i)
-                return false;
-            if (j != other.j)
-                return false;
-            return true;
+            Pair<?, ?> pair = (Pair<?, ?>) obj;
+            return Objects.equals(i, pair.i) && Objects.equals(j, pair.j);
         }
 
         @Override
-        public int hashCode() {
-            final int prime = 31;
-            int result = 1;
-            result = prime * result + (int) i;
-            result = prime * result + (int) j;
-            return result;
+        public String toString() {
+            return "(" + i + ", " + j + ")";
         }
 
-    }
-
-    static int lower_bound(long[] array, long key) {
-
-        int low = 0, high = array.length;
-        int mid;
-
-        while (low < high) {
-
-            mid = low + (high - low) / 2;
-
-            if (key <= array[mid]) {
-                high = mid;
-            }
-
-            else {
-
-                low = mid + 1;
-            }
-        }
-
-        if (low < array.length && array[low] < key) {
-            low++;
-        }
-
-        return low;
-    }
-
-    public static void swap(int[] a, int i, int j) {
-        int temp = a[i];
-        a[i] = a[j];
-        a[j] = temp;
-    }
-
-    public static void swap(char[] a, int i, int j) {
-        char temp = a[i];
-        a[i] = a[j];
-        a[j] = temp;
     }
 
     static long power(long x, long y, long p) {
@@ -170,23 +112,6 @@ public class Main {
 
     }
 
-    public static <T extends Comparable<T>> T max(T a, T b) {
-        if (a.compareTo(b) >= 0) {
-            return a;
-        } else {
-            return b;
-        }
-    }
-
-    public static <T extends Comparable<T>> T min(T a, T b) {
-        if (a.compareTo(b) < 0) {
-            return a;
-        } else {
-            return b;
-        }
-    }
-
-  
     public static long gcd(long a, long b) {
         if (b == 0)
             return a;
@@ -203,18 +128,10 @@ public class Main {
         return (a * b) / gcd(a, b);
     }
 
-    public int lcm(int a, int b) {
+    public static int lcm(int a, int b) {
         return (a * b) / gcd(a, b);
     }
 
-    static boolean isPrime(int n) {
-        for (int i = 2; i <= Math.sqrt(n); i++)
-            if (n % i == 0)
-                return false;
-        return n > 1;
-    }
-
-    
     public static int countSetBits(long number) {
         int count = 0;
         while (number > 0) {
@@ -224,13 +141,7 @@ public class Main {
         return count;
     }
 
-    static boolean isPowerOfTwo(long x) {
-
-        return x != 0 && ((x & (x - 1)) == 0);
-    }
-
     public static int max(int[] elementData) {
-
         int max = elementData[0];
         for (int i = 1; i < elementData.length; i++) {
             if (elementData[i] > max) {
@@ -262,7 +173,6 @@ public class Main {
     }
 
     public static long max(long[] elementData) {
-
         long max = elementData[0];
         for (int i = 1; i < elementData.length; i++) {
             if (elementData[i] > max) {
@@ -282,12 +192,18 @@ public class Main {
         return min;
     }
 
-    public static int max(int i, int l) {
-        return Math.max(i, l);
-    }
+    public static void reverse(char[] array) {
 
-    public static long max(long i, long l) {
-        return Math.max(i, l);
+        int n = array.length;
+
+        for (int i = 0; i < n / 2; i++) {
+
+            char temp = array[i];
+
+            array[i] = array[n - i - 1];
+
+            array[n - i - 1] = temp;
+        }
     }
 
     public static void reverse(int[] array) {

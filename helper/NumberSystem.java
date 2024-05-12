@@ -283,6 +283,10 @@ class NumberTheory {
         return C[r];
     }
 
+    static long ncr(long n, long r) {
+        return (((factorials[(int) n] * invFactorials[(int) r]) % mod) * invFactorials[(int) (n - r)]) % mod;
+    }
+
     /**
      * Catlan number:
      * - Time complexity: O(n*n)
