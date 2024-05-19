@@ -32,7 +32,7 @@ public class Main {
 
         // precompFacts();
 
-        boolean multiple = true;
+        boolean multiple = false;
         if (multiple) {
             int testCount = sc.nextInt();
             for (int i = 1; i <= testCount; i++) {
@@ -48,26 +48,56 @@ public class Main {
 
     static class Question {
 
+        long dp[];
+
+        void dfs(int u, int p, ArrayList<ArrayList<Integer>> adj, int depth) {
+            dp[0] += depth;
+            for (int v : adj.get(u)) {
+                if (v == p)
+                    continue;
+                dfs(v, u, adj, depth + 1);
+            }
+        }
+
         public void solve(int testNumber, InputReader sc, OutputWriter out) {
+
+            int n = sc.nextInt();
+            ArrayList<ArrayList<Integer>> adj = new ArrayList<>();
+            for (int i = 0; i < n; i++) {
+                adj.add(new ArrayList<>());
+            }
+            for (int i = 0; i < n - 1; i++) {
+                int u = sc.nextInt() - 1;
+                int v = sc.nextInt() - 1;
+                adj.get(u).add(v);
+                adj.get(v).add(u);
+            }
+            long weight[] = new long[n];
+            for (int i = 0; i < n; i++) {
+                weight[i] = sc.nextLong();
+            }
+            dp = new long[n];
+            dfs(0, -1, adj, 0);
+            out.println(dp[0]);
 
         }
 
     }
 
-    static class Pair<I extends Comparable<I>, J extends Comparable<J>> implements Comparable<Pair<I, J>> {
-        I i;
-        J j;
+    static class Pair implements Comparable<Pair> {
+        long i;
+        long j;
         long cost;
 
-        public Pair(I i, J j) {
+        public Pair(long i, long j) {
             this.i = i;
             this.j = j;
         }
 
         @Override
-        public int compareTo(Pair<I, J> o) {
-            int cmp = i.compareTo(o.i);
-            return cmp != 0 ? cmp : j.compareTo(o.j);
+        public int compareTo(Pair o) {
+            int cmp = Long.compare(i, o.i);
+            return cmp != 0 ? cmp : Long.compare(j, o.j);
         }
 
         @Override
@@ -76,15 +106,19 @@ public class Main {
                 return true;
             if (obj == null || getClass() != obj.getClass())
                 return false;
-            Pair<?, ?> pair = (Pair<?, ?>) obj;
-            return Objects.equals(i, pair.i) && Objects.equals(j, pair.j);
+            Pair pair = (Pair) obj;
+            return i == pair.i && j == pair.j;
+        }
+
+        @Override
+        public int hashCode() {
+            return Objects.hash(i, j);
         }
 
         @Override
         public String toString() {
             return "(" + i + ", " + j + ")";
         }
-
     }
 
     static long power(long x, long y, long p) {
