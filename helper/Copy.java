@@ -1,21 +1,19 @@
+package helper;
+
 import java.util.*;
 import java.io.*;
+import java.math.*;
 
-public class Main {
+public class Copy {
 
     static long mod = (long) (1e9 + 7);
-
-    static class Problem {
-
-        public void solve(int testNumber, InputReader sc, OutputWriter out) {
-
-            int n = sc.nextInt();
-
-        }
-    }
+    static final Random random = new Random();
+    static long[] factorials;
+    static long[] invFactorials;
 
     public static void main(String[] args) throws IOException {
 
+        // precompFacts();
         boolean multiple = true;
         InputReader sc = new InputReader(System.in);
         OutputWriter out = new OutputWriter(System.out);
@@ -31,6 +29,14 @@ public class Main {
         }
 
         out.close();
+    }
+
+    static class Problem {
+
+        public void solve(int testNumber, InputReader sc, OutputWriter out) {
+
+            int n = sc.nextInt();
+        }
     }
 
     static class Pair implements Comparable<Pair> {
@@ -77,11 +83,143 @@ public class Main {
 
     }
 
+    static long power(long x, long y, long p) {
+        long res = 1;
+
+        x = x % p;
+
+        if (x == 0)
+            return 0;
+
+        while (y > 0) {
+
+            if ((y & 1) != 0)
+                res = (res * x) % p;
+
+            y = y >> 1;
+            x = (x * x) % p;
+        }
+        return res;
+    }
+
+    static long modInverse(long b, long m) {
+        return (long) power(b, m - 2, m);
+    }
+
+    public static long gcd(long a, long b) {
+        if (b == 0)
+            return a;
+        return gcd(b, a % b);
+    }
+
+    public static <T> void reverse(T[] array) {
+        for (int i = 0; i < array.length / 2; i++) {
+            T temp = array[i];
+            array[i] = array[array.length - i - 1];
+            array[array.length - i - 1] = temp;
+        }
+    }
+
+    public static void reverse(long[] array) {
+        for (int i = 0; i < array.length / 2; i++) {
+            long temp = array[i];
+            array[i] = array[array.length - i - 1];
+            array[array.length - i - 1] = temp;
+        }
+    }
+
+    static void precompFacts() {
+        factorials = new long[2_000_001];
+        invFactorials = new long[2_000_001];
+        factorials[0] = invFactorials[0] = 1;
+        for (int i = 1; i < factorials.length; i++)
+            factorials[i] = modularMultiplication(factorials[i - 1], i, mod);
+        invFactorials[factorials.length - 1] = modularExponentiation(factorials[factorials.length - 1], mod - 2,
+                mod);
+        for (int i = invFactorials.length - 2; i >= 0; i--)
+            invFactorials[i] = modularMultiplication(invFactorials[i + 1], i + 1, mod);
+    }
+
+    static public int modularAddition(int a, int b, int mod) {
+        return (a % mod + b % mod) % mod;
+    }
+
+    static public long modularAddition(long a, long b, long mod) {
+        return (a % mod + b % mod) % mod;
+    }
+
+    static public int modularMultiplication(int a, int b, int mod) {
+        return ((a % mod) * (b % mod)) % mod;
+    }
+
+    static public long modularMultiplication(long a, long b, long mod) {
+        return ((a % mod) * (b % mod)) % mod;
+    }
+
+    static public int modularSubtraction(int a, int b, int mod) {
+        return (a % mod - b % mod + mod) % mod;
+    }
+
+    static public long modularSubtraction(long a, long b, long mod) {
+        return (a % mod - b % mod + mod) % mod;
+    }
+
+    static long modularDivision(long a, long b, long mod) {
+        return modularMultiplication(a, modInverse(b, mod), mod);
+    }
+
+    public static int binaryExponentiation(int x, int n) {
+        if (n == 0)
+            return 1;
+        else if (n % 2 == 0)
+            return binaryExponentiation(x * x, n / 2);
+        else
+            return x * binaryExponentiation(x * x, (n - 1) / 2);
+    }
+
+    public static long binaryExponentiation(long x, long n) {
+        long result = 1;
+        while (n > 0) {
+            if (n % 2 == 1)
+                result *= x;
+            x = x * x;
+            n /= 2;
+        }
+        return result;
+    }
+
+    static long ncr(long n, long r) {
+        return (((factorials[(int) n] * invFactorials[(int) r]) % mod) * invFactorials[(int) (n - r)]) % mod;
+    }
+
+    public static int modularExponentiation(int x, int n, int mod) {
+        if (n == 0)
+            return 1 % mod;
+        else if (n % 2 == 0)
+            return modularExponentiation(modularMultiplication(x, x, mod), n / 2, mod);
+        else
+            return modularMultiplication(x,
+                    modularExponentiation(modularMultiplication(x, x, mod), (n - 1) / 2, mod),
+                    mod);
+    }
+
+    public static long modularExponentiation(long x, long n, long mod) {
+        long result = 1;
+        while (n > 0) {
+            if (n % 2 == 1)
+                result = modularMultiplication(result, x, mod);
+            x = modularMultiplication(x, x, mod);
+            n /= 2;
+        }
+        return result;
+    }
+
     static class InputReader {
         private InputStream stream;
         private byte[] buffer = new byte[1024];
         private int currentCharacter;
         private int numberOfCharacters;
+        private SpaceCharFilter filter;
 
         public InputReader(InputStream stream) {
             this.stream = stream;
@@ -125,7 +263,7 @@ public class Main {
 
         public int nextInt() {
             int c = read();
-            while (isWhitespace(c)) {
+            while (isSpaceChar(c)) {
                 c = read();
             }
             int sgn = 1;
@@ -141,13 +279,13 @@ public class Main {
                 sum *= 10;
                 sum += c - '0';
                 c = read();
-            } while (!isWhitespace(c));
+            } while (!isSpaceChar(c));
             return sum * sgn;
         }
 
         public long nextLong() {
             int c = read();
-            while (isWhitespace(c)) {
+            while (isSpaceChar(c)) {
                 c = read();
             }
             int sgn = 1;
@@ -163,13 +301,13 @@ public class Main {
                 sum *= 10;
                 sum += c - '0';
                 c = read();
-            } while (!isWhitespace(c));
+            } while (!isSpaceChar(c));
             return sum * sgn;
         }
 
         public String next() {
             int c = read();
-            while (isWhitespace(c)) {
+            while (isSpaceChar(c)) {
                 c = read();
             }
             StringBuilder sum = new StringBuilder();
@@ -178,8 +316,15 @@ public class Main {
                     sum.appendCodePoint(c);
                 }
                 c = read();
-            } while (!isWhitespace(c));
+            } while (!isSpaceChar(c));
             return sum.toString();
+        }
+
+        public boolean isSpaceChar(int c) {
+            if (filter != null) {
+                return filter.isSpaceChar(c);
+            }
+            return isWhitespace(c);
         }
 
         public static boolean isWhitespace(int c) {
@@ -218,9 +363,17 @@ public class Main {
             return readLine();
         }
 
+        public BigInteger readBigInteger() {
+            try {
+                return new BigInteger(nextLine());
+            } catch (NumberFormatException e) {
+                throw new InputMismatchException();
+            }
+        }
+
         public char nextCharacter() {
             int c = read();
-            while (isWhitespace(c)) {
+            while (isSpaceChar(c)) {
                 c = read();
             }
             return (char) c;
@@ -228,7 +381,7 @@ public class Main {
 
         public double nextDouble() {
             int c = read();
-            while (isWhitespace(c)) {
+            while (isSpaceChar(c)) {
                 c = read();
             }
             int sgn = 1;
@@ -237,7 +390,7 @@ public class Main {
                 c = read();
             }
             double sum = 0;
-            while (!isWhitespace(c) && c != '.') {
+            while (!isSpaceChar(c) && c != '.') {
                 if (c == 'e' || c == 'E') {
                     return sum * Math.pow(10, nextInt());
                 }
@@ -251,7 +404,7 @@ public class Main {
             if (c == '.') {
                 c = read();
                 double m = 1;
-                while (!isWhitespace(c)) {
+                while (!isSpaceChar(c)) {
                     if (c == 'e' || c == 'E') {
                         return sum * Math.pow(10, nextInt());
                     }
@@ -268,10 +421,22 @@ public class Main {
 
         public boolean isExhausted() {
             int value;
-            while (isWhitespace(value = peek()) && value != -1) {
+            while (isSpaceChar(value = peek()) && value != -1) {
                 read();
             }
             return value == -1;
+        }
+
+        public SpaceCharFilter getFilter() {
+            return filter;
+        }
+
+        public void setFilter(SpaceCharFilter filter) {
+            this.filter = filter;
+        }
+
+        public interface SpaceCharFilter {
+            public boolean isSpaceChar(int ch);
         }
 
         public int[] nextIntArray(int n) {
